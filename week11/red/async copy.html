@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-top: 20px;
+            margin-left: 20px;
+            display: inline-block;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .gray {
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="redDiv" class="gray"></div>
+    <div id="greenDiv" class="gray"></div>
+    <div id="yellowDiv" class="gray"></div>
+    <button id="next">next</button>
+</body>
+
+<script>
+    let redDiv = document.getElementById("redDiv");
+    let greenDiv = document.getElementById("greenDiv");
+    let yellowDiv = document.getElementById("yellowDiv");
+    function redLight() {
+        redDiv.style.backgroundColor = "red";
+        greenDiv.style.backgroundColor = "gray";
+        yellowDiv.style.backgroundColor = "gray";
+    }
+    function greenLight() {
+        redDiv.style.backgroundColor = "gray";
+        greenDiv.style.backgroundColor = "green";
+        yellowDiv.style.backgroundColor = "gray";
+    }
+    function yellowLight() {
+        redDiv.style.backgroundColor = "gray";
+        greenDiv.style.backgroundColor = "gray";
+        yellowDiv.style.backgroundColor = "yellow";
+    }
+    // function go() {
+    //     greenLight()
+    //     setTimeout(yellowLight, 10000);
+    //     setTimeout(redLight, 12000);
+    //     setTimeout(go, 17000);
+    // }
+    // go();
+    function sleep(t) {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, t);
+        });
+    }
+
+    function happen(element,eventName) {
+        return new Promise((resolve,reject) => {
+            document.addEventListener(eventName,resolve,{once:true})
+        });
+    }
+
+    async function go() {
+        // greenLight();
+        // await sleep(10000);
+        // yellowLight();
+        // await sleep(2000);
+        // redLight();
+        // await sleep(5000);
+        // go();
+
+        while (true) {
+            greenLight();
+            await happen(document.getElementById("next"),"click");
+            yellowLight();
+            await happen(document.getElementById("next"),"click");
+            redLight();
+            await happen(document.getElementById("next"),"click");
+        }
+    }
+</script>
+
+</html>

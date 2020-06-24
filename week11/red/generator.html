@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-top: 20px;
+            margin-left: 20px;
+            display: inline-block;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .gray {
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="redDiv" class="gray"></div>
+    <div id="greenDiv" class="gray"></div>
+    <div id="yellowDiv" class="gray"></div>
+</body>
+
+
+<script>
+    let redDiv = document.getElementById("redDiv");
+    let greenDiv = document.getElementById("greenDiv");
+    let yellowDiv = document.getElementById("yellowDiv");
+
+    function redLight() {
+        redDiv.style.backgroundColor = "red";
+        greenDiv.style.backgroundColor = "gray";
+        yellowDiv.style.backgroundColor = "gray";
+    }
+
+    function greenLight() {
+        redDiv.style.backgroundColor = "gray";
+        greenDiv.style.backgroundColor = "green";
+        yellowDiv.style.backgroundColor = "gray";
+    }
+
+    function yellowLight() {
+        redDiv.style.backgroundColor = "gray";
+        greenDiv.style.backgroundColor = "gray";
+        yellowDiv.style.backgroundColor = "yellow";
+    }
+
+    function sleep(t) {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, t);
+        });
+    }
+
+    function* go() {
+        while (true) {
+            greenLight();
+            yield sleep(1000);
+            yellowLight();
+            yield sleep(200);
+            redLight();
+            yield sleep(500);
+
+        }
+    }
+
+    /*
+    function co(iterator) {
+        let { value, done } = iterator.next();
+        if (done) {
+            return
+        }
+        if (value instanceof Promise) {
+            value.then(() => {
+                co(iterator);
+            });
+        }
+    }
+    co(go());
+    */
+
+    function co(generator) {
+        return function () {
+            return run(generator())
+        }
+    }
+
+    function run(iterator) {
+        let { value, done } = iterator.next();
+        if (done) {
+            return
+        }
+        if (value instanceof Promise) {
+            value.then(() => {
+                run(iterator);
+            });
+        }
+    }
+
+    go = co(go);
+</script>
+
+</html>
